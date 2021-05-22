@@ -190,7 +190,7 @@ SELECT DISTINCT name FROM kind_of_sport;
 -- 41. Вывести команды 2-ой лиги
 SELECT * FROM team WHERE idleague=2;
 
--- 42.
+-- 42. Показать команды, в которых отсутсвует игрок(и)
 SELECT team.name
 FROM team
 WHERE idteam NOT IN (SELECT idteam FROM player);
