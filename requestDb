@@ -1,0 +1,519 @@
+USE raspisanie_sports_game;
+
+##############################UPDATE###########################
+-- 1. Обновать email пользователя 
+UPDATE user 
+SET email = 'alegsychev@mail.ru'
+WHERE email = 'oleg_sychev@mail.ru';
+
+-- 2. Изменить возраст тренеров
+UPDATE coach 
+SET age = age - 5;
+
+-- 3. Установить возраст игрока по ФИО
+UPDATE player
+SET age = 19
+WHERE FIO = 'Сергеев Сергей Сергеевич';
+
+-- 4.Установить новое значение приза
+UPDATE league
+SET prize = '300$'
+WHERE prize = 'Пирожок с яблоком';
+
+-- 5. Изменить размер площадки
+UPDATE playground
+SET size = 420
+WHERE size = '28x15';
+
+#########################DELETE#################################
+-- 6. Удалить тренера по ФИО
+DELETE FROM coach
+WHERE FIO = 'Линцов Иван Николаевич';
+
+-- 7
+DELETE FROM training
+WHERE idteam = 1 AND idplayground = 1;
+
+-- 8
+DELETE FROM name_item
+WHERE name = 'потери';
+
+-- 9
+DELETE FROM matches
+WHERE idplayground = 4;
+
+-- 10
+DELETE FROM user
+WHERE email = 'andan2005@yandex.ru' OR idUser = 9;
+
+#############################LIKE и работа со строками###############################
+-- 11
+SELECT * FROM location 
+WHERE address LIKE 'г. Волгоград,%';
+
+-- 12
+SELECT * FROM playground
+WHERE name LIKE 'Big%';
+
+-- 13
+SELECT * FROM training
+WHERE description_training_process REGEXP 'подготовка$';
+
+-- 14
+SELECT * FROM kind_of_sport
+WHERE description IS NULL;
+
+-- 15
+SELECT * FROM team 
+WHERE name LIKE 'Ро%';
+
+
+#############################UNION, EXCEPT, INTERSECT#########################
+-- 16
+SELECT FIO, age
+FROM coach
+UNION SELECT FIO, age FROM player;
+
+-- 17
+SELECT * FROM league
+WHERE prize != '300$';
+
+-- 18. Показать id команд
+SELECT player.idteam
+FROM player
+WHERE player.idteam IN (SELECT coach.idteam FROM coach);
+
+SELECT DISTINCT idteam FROM player;
+
+#---------------------Функциональные требования------------------------#	
+# 19. Добавить новый матч
+DELETE FROM matches
+WHERE idmatch = 6;
+
+INSERT INTO matches  
+VALUES 
+(6, 'Завершен', '2021-03-20 18:30:00', '2021-03-20 20:00:00', 2, 1, 1, 2);
+
+#20. Изменить время игры
+UPDATE matches
+SET start_time = '2021-03-15 16:00:00',
+	end_time = '2021-03-15 17:30:00'
+WHERE state = 'Завершен' AND winner = 6;
+
+#21. Перенести матч на другую дату
+UPDATE matches
+SET start_time = '2021-05-20 16:30:00',
+    end_time = '2021-05-20 18:00:00'
+WHERE state = 'Завершен' AND winner = 10;
+
+#22. Отменить матч
+UPDATE matches
+SET state = 'Отменен',
+	winner = null
+WHERE state = 'В процессе' AND winner = 3;
+
+#23. Изменить место проведения
+UPDATE playground 
+SET idlocation = 1,
+    size = 420
+WHERE name = 'BigWall';
+
+#24. Показать приз лиги
+SELECT prize FROM league 
+WHERE name = 'НБА';
+
+#25. Показать информаю о состоянии матча(которые еще проходят)
+SELECT * FROM matches
+WHERE winner = 0;
+
+#26. Показать победителя в матче на первой площадке
+SELECT matches.winner FROM matches
+WHERE state = 'Завершен' AND idplayground = 1;
+
+#27. Показать размер площадки для вида спорта
+SELECT * FROM playground
+WHERE size = 420 AND idlocation = 1;
+
+#28. Показать число забитых мячей в матче
+SELECT matches.state, statistics.value, player.FIO 
+FROM matches
+JOIN statistics ON statistics.idmatch = matches.idmatch
+JOIN player ON player.idplayer = statistics.idplayer
+WHERE matches.state = 'Завершен' AND statistics.id_name_item = 1;
+
+#29. Показать лучшего игрока по количеству забитых голов 
+SELECT * FROM statistics
+WHERE id_name_item = 1 AND idmatch = 1;
+
+-- 30.Показать количество матчей выигранных на определенной площадке
+SELECT count(*) AS win_game FROM matches
+WHERE idplayground = 1 AND state = 'Завершен';
+
+#--------------------GROUP_CONCAT-----------------------#
+-- 31
+SELECT GROUP_CONCAT(FIO) as FIO FROM coach WHERE age > 40 AND age < 60;
+
+-- 32
+SELECT age, GROUP_CONCAT(FIO) as FIO FROM coach GROUP BY age;
+
+-- 33
+SELECT idteam, GROUP_CONCAT(FIO) as FIO from player GROUP BY idteam;
+
+#---------------------Вложенные SELECT с ALL, ANY, EXISTS----------------------------#
+-- 34. 
+SELECT mascot FROM team
+WHERE name = ANY (SELECT name FROM team WHERE name = 'Чикаго Буллз');
+
+-- 35.
+SELECT FIO FROM player
+WHERE idplayer = ANY (SELECT idplayer FROM statistics WHERE value = 5);
+
+-- 36.
+SELECT name FROM kind_of_sport
+WHERE idkind_of_sport = ALL (SELECT idkind_of_sport FROM league WHERE name = 'НБА');
+
+-- 37.
+SELECT name FROM team
+WHERE EXISTS (SELECT description_training_process FROM training WHERE training.idteam = team.idteam AND description_training_process='физическая подготовка');
+
+
+#----------------SELECT, DISTINCT, WHERE, AND/OR/NOT, IN, BETWEEN--------------------#
+-- 38. Показать возможные размеры площадки
+SELECT DISTINCT size FROM playground;
+
+-- 39. Показать время работы места проведения
+SELECT DISTINCT start_time, end_time FROM location;
+
+-- 40. Вывести все виды спорта
+SELECT DISTINCT name FROM kind_of_sport;
+
+-- 41. Вывести команды 2-ой лиги
+SELECT * FROM team WHERE idleague=2;
+
+-- 42.
+SELECT team.name
+FROM team
+WHERE idteam NOT IN (SELECT idteam FROM player);
+
+-- 43.
+SELECT * FROM training
+WHERE end_time < ALL(SELECT end_time FROM training WHERE idteam = 4);
+
+-- 44.
+UPDATE league
+SET prize = 222
+WHERE league.name LIKE '_и%';
+
+-- 45. Удалить отмененные матчи
+DELETE FROM matches
+WHERE winner = NULL;
+
+-- 46. Вывести игроков у которых возраст 19 лет или принадлежащие 5 команде
+SELECT * FROM player WHERE age = 19 OR idteam = 5;
+
+#47. Самая поздняя тренировка
+SELECT * FROM training
+WHERE start_time = (SELECT MAX(start_time) FROM training);
+
+#48. Тренеры, возраст которых выше среднего
+SELECT * FROM coach
+WHERE age > (SELECT AVG(age) FROM coach);
+
+#49. Игрок и его команда
+SELECT FIO, team.*
+FROM player
+JOIN team ON player.idteam = team.idteam;
+
+-- 50.
+SELECT * FROM location
+WHERE idlocation IN (SELECT idlocation FROM playground);
+
+-- 51. Информация о местах проведения на которых не имеется играемых площадок
+SELECT * FROM location
+WHERE idlocation NOT IN (SELECT idlocation FROM playground);
+
+-- 52
+SELECT * FROM league
+WHERE idleague BETWEEN 1 AND 5;
+
+-- 53
+SELECT * FROM user
+WHERE idUser BETWEEN 4 AND 8
+AND NOT idUser IN (4, 8, 6);
+
+-- 54
+SELECT * FROM playground
+WHERE `name` BETWEEN 'Orange Ball' AND 'Territory Ball'
+ORDER BY `name`;
+
+-- 55
+select player.FIO
+from player 
+where player.age < 21;
+
+-- 56
+select kind_of_sport.name
+from kind_of_sport 
+where kind_of_sport.idkind_of_sport < 5;
+
+-- 57
+select idplayground
+from playground 
+where (name != 'Akvarius');
+
+-- 58
+select distinct mascot from team;
+
+-- 59
+select count(distinct address) as count_of_address from location;
+
+#-------------GROUP BY (некоторые с HAVING), с LIMIT, ORDER BY (ASC|DESC)-----------#
+-- 60
+SELECT name, COUNT(*) AS name
+FROM league
+GROUP BY name;
+
+-- 61
+SELECT FIO, age
+FROM player
+ORDER BY age DESC;
+
+-- 62
+SELECT description_training_process, idteam
+FROM training
+ORDER BY description_training_process DESC, idteam ASC;
+
+#63. Вывести лигу и количество призов в ней
+SELECT name, COUNT(*) AS prize
+FROM league
+WHERE prize > '100$'
+GROUP BY name
+ORDER BY prize DESC;
+
+-- 64
+SELECT FIO, MIN(age)
+FROM coach
+GROUP BY FIO
+HAVING MIN(age)> 30
+ORDER BY MIN(age) DESC;
+
+-- 65
+SELECT * FROM user
+ORDER BY email
+LIMIT 3, 4;
+
+-- 66
+SELECT * FROM coach
+LIMIT 5;
+
+-- 67
+SELECT AVG(size) AS medium_size FROM playground;
+
+-- 68
+SELECT AVG(size) FROM playground
+WHERE name LIKE 'Big%';
+
+-- 69
+SELECT MIN(start_time), MAX(start_time) FROM location;
+
+-- 70
+SELECT COUNT(DISTINCT state) FROM matches;
+
+-- 71
+SELECT COUNT(*) AS loc_count,
+MAX(start_time) AS max_start_time,
+MIN(start_time) AS min_start_time,
+AVG(start_time) AS medium_start_time
+FROM location;
+
+-- 72
+SELECT name, COUNT(*) AS name_item
+FROM name_item
+GROUP BY name
+ORDER BY name_item ASC;
+
+-- 73
+SELECT state, COUNT(*) AS count
+FROM matches
+GROUP BY state;
+
+-- 74
+SELECT size, COUNT(*) AS sizeCount
+FROM playground
+GROUP BY size;
+
+
+#-------------JOIN: INNER, OUTER (LEFT, RIGHT, FULL), CROSS, NATURAL-------------#
+-- 75. Вид спорта и название лиги
+SELECT kind_of_sport.name as sport, league.name as league
+FROM kind_of_sport
+JOIN league ON kind_of_sport.idkind_of_sport = league.idkind_of_sport;
+
+-- 76. Тренер команды и в какой лиге выступают
+SELECT coach.FIO, team.name, league.name
+FROM coach
+JOIN team ON coach.idteam = team.idteam
+JOIN league ON team.idleague = league.idleague;
+
+-- 77. Соединить таблицы пользователей и игроков
+SELECT user.email, player.FIO
+FROM user
+JOIN player ON user.idUser = player.idplayer 
+WHERE player.age = 21;
+
+-- 78. Команда и её тренировка
+SELECT name, description_training_process
+FROM training 
+LEFT JOIN team ON team.idteam = training.idteam;
+
+-- 79. Показать лигу, название команды, маскота и вид спорта
+SELECT league.name, team.name, team.mascot, kind_of_sport.idkind_of_sport
+FROM league
+LEFT JOIN team ON team.idleague = league.idleague
+LEFT JOIN kind_of_sport ON league.idkind_of_sport = kind_of_sport.idkind_of_sport
+WHERE league.prize >= "100$"
+ORDER BY league.name;
+
+-- 80. Показать статистику игрока по элементам статистики
+SELECT statistics.value, name_item.name, player.FIO
+FROM player
+JOIN statistics ON statistics.idplayer = player.idplayer 
+JOIN name_item ON statistics.id_name_item = name_item.idname_item;
+
+-- 81. Показать место проведения, матч и площадку, на которой проходит матч
+SELECT location.address, matches.state, playground.name
+FROM location   
+JOIN playground ON playground.idlocation = location.idlocation                                                   
+JOIN matches ON matches.idplayground = playground.idplayground                
+ORDER BY matches.state;
+
+-- 82.Вывести команду, её приз в лиге и описание тренировки команды
+SELECT team.name, league.prize, training.description_training_process
+FROM league
+JOIN team ON league.idleague = team.idleague
+JOIN training ON team.idteam = training.idteam
+WHERE team.mascot LIKE '_о%' AND league.prize = 222;
+
+-- 83. Вывести вид спорта и id площадки 
+SELECT kind_of_sport.name, playground_kind_of_sport.idplayground
+FROM kind_of_sport
+RIGHT JOIN playground_kind_of_sport ON kind_of_sport.idkind_of_sport = playground_kind_of_sport.idkind_of_sport
+ORDER BY kind_of_sport.name;
+
+-- 84. Команда определенного вида спорта и её приз
+SELECT team.name as team, league.prize, kind_of_sport.name as sport
+FROM team
+JOIN league ON team.idleague = league.idleague
+LEFT JOIN kind_of_sport ON kind_of_sport.idkind_of_sport = league.idkind_of_sport
+ORDER BY team.name;
+
+-- 85. Площадки и к какому спорту они относятся
+SELECT playground.name as playground , kind_of_sport.name as sport, playground_kind_of_sport.idkind_of_sport
+FROM kind_of_sport
+JOIN playground_kind_of_sport ON playground_kind_of_sport.idkind_of_sport = kind_of_sport.idkind_of_sport
+JOIN playground ON playground.idplayground = playground_kind_of_sport.idplayground;
+
+-- 86. Тренер и игрок определенной команды
+SELECT coach.FIO AS coachFIO, player.FIO AS playerFIO, team.name
+FROM coach
+JOIN team ON team.idteam = coach.idteam
+JOIN player ON player.idteam = team.idteam
+WHERE player.age > 19
+ORDER BY team.name;
+
+-- 87. Вывести игрока старше 20 лет и его статистику по выбранному значению в матче
+SELECT name_item.idname_item, statistics.value, matches.winner, player.FIO
+FROM statistics
+LEFT JOIN matches ON statistics.idmatch = matches.idmatch
+JOIN player ON player.idplayer = statistics.idplayer
+LEFT JOIN name_item ON statistics.id_name_item = name_item.idname_item
+WHERE player.age > 20;
+
+-- 89
+SELECT * FROM player WHERE (idPlayer < 5) AND (age < 24);
+
+-- 90
+SELECT count(DISTINCT idCoach) AS count_of_coach FROM coach;
+
+-- 91
+SELECT FIO AS FIOcoach, age 
+FROM coach
+UNION SELECT FIO, age 
+FROM player
+ORDER BY FIOcoach DESC;
+
+-- 92
+SELECT start_time, end_time
+FROM location WHERE start_time BETWEEN '14:30:00' AND '19:00:00'
+UNION SELECT start_time, end_time
+FROM matches;
+
+-- 93
+SELECT value, id_name_item, idplayer
+FROM statistics WHERE value >= 3
+UNION SELECT value, id_name_item, idplayer
+FROM statistics WHERE value = 3
+ORDER BY idplayer;
+
+-- 94
+SELECT * FROM training
+WHERE DATEDIFF(CURDATE(), start_time) = 1;
+
+-- 95
+SELECT * FROM location
+WHERE TIMEDIFF(end_time, start_time) = '02:00:00';
+
+-- 96
+SELECT * FROM training
+WHERE TIMESTAMPDIFF(HOUR, training.start_time, training.end_time) = '2:00:00';
+
+-- 97
+SELECT UPPER(LEFT(name, 5)) AS abbreviatura,
+       CONCAT(name, '-', size) AS NameSize
+FROM playground
+ORDER BY abbreviatura;
+
+-- 98
+SELECT description_training_process, idteam,
+CASE 
+WHEN description_training_process = 'физическая подготовка'
+THEN 'Развитие атлетизма'
+WHEN description_training_process = 'отработка индивидуальных навыков'
+THEN 'Индвивидуальные тренировки'
+ELSE 'Прочее'
+END AS Category
+FROM training;
+
+-- 99
+SELECT idplayer, id_name_item,
+     IF (value > 3, 'Большое значение', 'Малое значение') AS value
+FROM statistics;
+
+-- 100
+SELECT idmatch, state,
+IFNULL (winner, 'Не определен') AS winner
+FROM matches;
+
+-- 101
+SELECT CONCAT_WS('  ', email, password, idUser) AS full_info
+FROM user
+ORDER BY full_info;
+
+-- 102
+UPDATE location
+SET end_time = '17:10:00'
+WHERE start_time = '14:30:00';
+
+
+-- MODIFICATION:
+#1. Вывести всю статистику о матче 
+SELECT playground.name, team.name, matches.winner
+FROM matches
+JOIN team ON matches.idteam1 = team.idteam
+-- JOIN team ON matches.idteam2 = team.idteam
+JOIN playground ON matches.idplayground = playground.idplayground;
+
+
+
+#2. Вывести топ-5 команд по количеству матчей
+#3. в период с по по заданному месту проведения вывести количество тренировок заданного вида спорта(по желанию)(изменить time на datetime)
