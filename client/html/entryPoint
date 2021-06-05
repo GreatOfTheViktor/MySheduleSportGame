@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My football team</title>
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/entryPoint.css">
+</head>
+<body>
+    <div class="authorization">
+        <div class="buttons">
+            <span id = "auth">Авторизация</span>
+            <span id = "reg">Регистрация</span>
+        </div>
+        <div class="auth">
+            <input type="text" name="usernameAuth" id="usernameAuth" placeholder="Ваш логин">
+            <input type="password" name="pass" id="pass" placeholder="Ваш пароль">
+            <button id = "authentification">Войти</button>
+        </div>
+        <div class="reg">
+            <input type="text" name = "userName" id = "userName" placeholder="Имя пользователя">
+            <input type="email" name="email" id="emailReg" placeholder="Ваш email">
+            <input type="password" name="passw" id="passw" placeholder="Ваш пароль (не менее 5 символов)">
+            <input type="password" name="repass" id="repass" placeholder="Повторите пароль">
+            <button id = "registration">Зарегестрироваться</button>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../script/entryPoint.js"></script>
+</body>
+</html>
