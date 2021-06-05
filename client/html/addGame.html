@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/addGame.css">
+    <title>Add Schedule</title>
+</head>
+<body>
+<h3 id="profile"></h3>
+<button class = "btn" id="back">Вернуться назад</button>
+<table border="1">
+    <tbody>
+    <tr>
+        <th>Время начала</th>
+        <th>Время окончания</th>
+        <th>Описание</th>
+        <th>Место проведения</th>
+    </tr>
+    <tr>
+        <td>
+            <input type="date" id = "dateStart" value = "2021-01-01">
+            <input type="text" id = "timeStart" value = "00:00">
+        </td>
+        <td>
+            <input type="date" id = "dateEnd" value = 2021-01-01">
+            <input type="text" id = "timeEnd" value = "00:00">
+        </td>
+        <td>
+            <textarea id="desc"></textarea>
+        </td>
+        <td>
+            <select id="place">
+
+            </select>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<button id = "confirm">Добавить</button>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="../script/profile.js"></script>
+<script src="../script/addGame.js"></script>
+</body>
+</html>
