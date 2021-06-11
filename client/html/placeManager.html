@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/font.css">
+    <link rel="stylesheet" href="../css/placeManager.css">
+    <link rel="stylesheet" href="../css/profile.css">
+    <title>PlaceManager</title>
+</head>
+<body>
+<h3 id="profile"></h3>
+<button class = "btn" id="back">Вернуться назад</button>
+<table border="1">
+    <tbody>
+    <tr>
+        <th>Наименование</th>
+        <th>Вид спорта</th>
+        <th>Точка проведения</th>
+        <th>Адрес</th>
+    </tr>
+    <tr>
+        <td>
+            <input type="text" id="placeName">
+        </td>
+        <td>
+            <select id="sport">
+
+            </select>
+        </td>
+        <td>
+            <select id="adressName">
+
+            </select>
+        </td>
+        <td id = "coordinates">
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+<div class="butBlock">
+    <button class = "btn" id = "savePlace">Сохранить место</button>
+    <button class = "btn" id = "addAdr">Добавить адрес</button>
+    <button class = "btn" id = "addSport">Добавить вид спорта</button>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="../js/profile.js"></script>
+<script src="../js/placeManager.js"></script>
+</body>
+</html>
