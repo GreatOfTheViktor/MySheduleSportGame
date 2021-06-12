@@ -1,0 +1,68 @@
+span{
+    display: block;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto 5px auto;
+}
+
+.butBlock{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 50px;
+    transition: all 0.5s ease-in-out;
+}
+
+.but{
+    display: block;
+    padding: 15px;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.but:hover{
+    background: linear-gradient(to top left,black,white);
+    -webkit-text-stroke: 1px black;
+}
+
+table{
+    padding: 10px;
+    margin: 100px auto 0 auto;
+    text-align: center;
+    font-size: 20px;
+}
+
+th, td{
+    background: silver;
+    padding: 5px;
+}
+
+textarea, input{
+    text-align: center;
+    font-size: 20px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+textarea{
+    resize: none;
+}
+
+select{
+    font-size: 20px;
+    text-align: center;
+}
+
+button{
+    cursor: pointer;
+}
+
+#morePlaces{
+    position: fixed;
+    left: 0;
+    top: 0;
+}
