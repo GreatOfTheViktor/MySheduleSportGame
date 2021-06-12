@@ -1,0 +1,26 @@
+table{
+    margin: 100px auto;
+    background: aliceblue;
+    font-size: 20px;
+    text-align: center;
+    width: 70%;
+}
+
+.but{
+    display: block;
+    padding: 15px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    font-weight: 900;
+    font-size: 20px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.but:hover{
+    background: linear-gradient(to top left,black,white);
+    -webkit-text-stroke: 1px black;
+}
