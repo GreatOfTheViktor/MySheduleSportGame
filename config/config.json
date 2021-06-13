@@ -1,0 +1,7 @@
+{
+  "secret": "secretformysecretlypassword",
+  "host": "localhost",
+  "user": "root",
+  "password": "Qwerty_123",
+  "database": "schedule"
+}
